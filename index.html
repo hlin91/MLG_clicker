@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="interface.css" />
+  </head>
+  <style>
+    div {
+      background-image: src="imgs/background.jpg";
+    }
+  </style>
+  <body>
+    <script type="text/javascript" src="main.js"></script>
+    <!-- <div class="row">
+      <div class="column">
+	Gold: <span class="gold"></span>
+	<span style="display:none" class="show_pickaxe">Pickaxe Level: <span class="pickaxe"></span></span>
+	<span style="display:none" class="show_miner">Miners: <span class="miner"></span></span>
+	<span style="display:none" class="show_miner_pickaxe">Miner Pickaxe Level: <span class="miner_pickaxe"></span></span>
+      </div>
+      <div class="column">
+	<button onClick="mineGold(1)">Mine Gold</button>
+	<button style="display:none" class="show_pickaxe" onClick="upgradePickaxe(1)">Upgrade Pickaxe: $<span class="pickaxe_cost"></span></button>
+	<button style="display:none" class="show_miner" onClick="hireMiner(1)">Hire Miners: $<span class="miner_cost"></span></button>
+	<button style="display:none" class="show_miner" onClick="upgradeMinerPickaxe(1)">Upgrade Miners' Pickaxes: $<span class="miner_pickaxe_cost"></span></button>
+      </div>
+    </div> -->
+    <div class="two-col">
+      <div class="one-col" id = "tv-and-shop">
+        <audio controls autoplay loop id="meme-music">
+          <source src="sounds/bangarang.mp3" type="audio/mp3">
+          Your browser does not support the audio element.
+        </audio>
+        <script>
+          var audio = document.getElementById("meme-music");
+          audio.volume = 0.05;
+        </script>
+        <p>Kill streak: <span id="killStreak">0</span></p>
+        <button>Shop</button>
+        <input id="clicker" type="image" src="imgs/click_area_placehold.png" height="100%" width="100%">
+      </div>
+      <div class="two-col" id="nuisances">
+          <button id="potty">Potty: 0</button>
+          <button id="wife">Wife: 0</button>
+          <button id="baby">Baby: 0</button>
+          <button id="button-hold-killstreak">Hold killstreak</button>
+      </div>
+    </div>
+    <div class="row-experience" id="experience-bar" style="background-color: #67DB7B">
+      <p>Exp: <span id="experience">0</span></p>
+    </div>
+  </body>
+</html>
