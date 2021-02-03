@@ -2,12 +2,12 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="interface.css" />
+    <style>
+      body {
+        background-color: light-blue;
+      }
+    </style>
   </head>
-  <style>
-    div {
-      background-image: src="imgs/background.jpg";
-    }
-  </style>
   <body>
     <script type="text/javascript" src="main.js"></script>
     <!-- <div class="row">
@@ -35,14 +35,21 @@
           audio.volume = 0.05;
         </script>
         <p>Kill streak: <span id="killStreak">0</span></p>
-        <button>Shop</button>
-        <input id="clicker" type="image" src="imgs/click_area_placehold.png" height="100%" width="100%">
+        <p>Max streak: <span id="maxKillStreak">0</span></p>
+        <button class="click-ani">Shop</button>
+        <input class="click-ani" id="clicker" type="image" src="imgs/click_area_placehold.png" height="100%" width="100%">
       </div>
       <div class="two-col" id="nuisances">
-          <button id="potty">Potty: 0</button>
-          <button id="wife">Wife: 0</button>
-          <button id="baby">Baby: 0</button>
-          <button id="button-hold-killstreak">Hold killstreak</button>
+          <button class="click-ani" id="potty">Potty: 
+            <span id="pottyValue">0</span>
+          </button>
+          <button class="click-ani" id="wife">Wife: 
+            <span id="wifeValue">0</span>
+          </button>
+          <button class="click-ani" id="baby">Baby: 
+            <span id="babyValue">0</span>
+          </button>
+          <button class="click-ani" id="button-hold-killstreak">Hold killstreak</button>
       </div>
     </div>
     <div class="row-experience" id="experience-bar" style="background-color: #67DB7B">

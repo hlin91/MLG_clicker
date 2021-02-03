@@ -18,6 +18,10 @@ button:active {
     background-color: #ececec;
 }
 
+.click-ani:active {
+  transform: scale(.99, .99)
+}
+
 .column {
   float: left;
   padding-top: 4px;
