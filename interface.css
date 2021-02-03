@@ -1,7 +1,13 @@
+body {
+  background-image: url(imgs/banana.gif);
+  background-repeat: repeat;
+}
+
 button {
     background-color: #FFFFFF;
     border: none;
     color: black;
+    opacity: 100%;
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
@@ -31,8 +37,10 @@ button:active {
   margin: 4px;
 }
 
-.placehold {
-  background-color: #CACACA;
+.white-box {
+  background-color: rgba(255, 255, 255, .90);
+  border-radius: 10px;
+  padding: 20px
 }
 
 img {
@@ -56,4 +64,19 @@ img {
 }
 .row-experience {
   text-align:center;
+}
+
+.shop {
+  display:flex;
+  white-space:nowrap;
+  /* overflow:auto; */
+}
+
+.center {
+  margin: auto;
+}
+
+.center-horizontal {
+  margin-left: auto;
+  margin-right: auto;
 }

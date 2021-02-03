@@ -2,11 +2,6 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="interface.css" />
-    <style>
-      body {
-        background-color: light-blue;
-      }
-    </style>
   </head>
   <body>
     <script type="text/javascript" src="main.js"></script>
@@ -24,36 +19,51 @@
 	<button style="display:none" class="show_miner" onClick="upgradeMinerPickaxe(1)">Upgrade Miners' Pickaxes: $<span class="miner_pickaxe_cost"></span></button>
       </div>
     </div> -->
-    <div class="two-col">
-      <div class="one-col" id = "tv-and-shop">
+    <div class="two-col" style="max-height: 100%">
+      <div class="one-col" id="tv-and-shop">
         <audio controls autoplay loop id="meme-music">
-          <source src="sounds/bangarang.mp3" type="audio/mp3">
+          <source src="sounds/7nationarmy.mp3" type="audio/mp3">
           Your browser does not support the audio element.
         </audio>
         <script>
           var audio = document.getElementById("meme-music");
-          audio.volume = 0.05;
+          audio.volume = 0.20;
         </script>
-        <p>Kill streak: <span id="killStreak">0</span></p>
-        <p>Max streak: <span id="maxKillStreak">0</span></p>
-        <button class="click-ani">Shop</button>
-        <input class="click-ani" id="clicker" type="image" src="imgs/click_area_placehold.png" height="100%" width="100%">
+        <div class="white-box">
+          <p>Max streak: <span id="maxKillStreak">0</span></p>
+          <p>Kill streak: <span id="killStreak">0</span></p>
+          <p>Gamers: <span id="gamer">0</span></p>
+          <p>Kills per click: <span id="kpc">0</span></p>
+          <div class="row-experience" id="experience-bar" style="background-color: #67DB7B; border-radius: 10px">
+            <p>Exp: <span id="experience">0</span></p>
+          </div>
+        </div>
+        <div class="shop one-col center white-box">
+          <button id="upgradeGunButton" class="click-ani">Upgrade Gun<br>Cost: <span id= "upgradeGunCost">0</span> EXP</button>
+          <button id="gamerButton" class="click-ani">Recruit Gamer<br>Cost: <span id="gamerCost"></span> EXP</button>
+          <button id="lootBoxButton" class="click-ani">Buy Loot Box<br>Cost: <span id="lootBoxCost"></span> EXP</button>
+          <button id="CosmeticsButton" class="click-ani">Buy Background</button>
+        </div>
+        <input class="click-ani center-horizontal" id="clicker" type="image" src="imgs/click_area_placehold.png" height="900px">
       </div>
-      <div class="two-col" id="nuisances">
-          <button class="click-ani" id="potty">Potty: 
-            <span id="pottyValue">0</span>
-          </button>
-          <button class="click-ani" id="wife">Wife: 
-            <span id="wifeValue">0</span>
-          </button>
-          <button class="click-ani" id="baby">Baby: 
-            <span id="babyValue">0</span>
-          </button>
-          <button class="click-ani" id="button-hold-killstreak">Hold killstreak</button>
+      <div class="one-col">
+        <div class="white-box" id="message-box">
+          <p id="messages">
+          </p>
+        </div>
+        <div class="two-col white-box center" id="nuisances">
+            <button class="click-ani" id="pottyButton">Potty:  
+              <span id="potty">N/A</span>
+            </button>
+            <button class="click-ani" id="wifeButton">Wife: 
+              <span id="wife">N/A</span>
+            </button>
+            <button class="click-ani" id="babyButton">Baby: 
+              <span id="baby">N/A</span>
+            </button>
+            <button class="click-ani" id="button-hold-killstreak">Hold killstreak</button>
+        </div>
       </div>
-    </div>
-    <div class="row-experience" id="experience-bar" style="background-color: #67DB7B">
-      <p>Exp: <span id="experience">0</span></p>
     </div>
   </body>
 </html>
