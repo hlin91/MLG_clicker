@@ -2,15 +2,16 @@ gameOver = false
 clickValue = 1 // Amount of kills/exp per click
 clickValueMult = 1 // Multiplier for clickValue
 EXP_RATE = 100 // Multiplier for exp growth rate
+EXP_PASSIVE_RATE = 0.01 // Passive gain rate of exp
 WIFE_SAP_RATE = 0.005 // Rate at which the wife drains your funds
 KILLSTREAK_SAP_RATE = 0.05 // Rate at which kill streak drops
-NUISANCE_ADD_RATE = 10
+NUISANCE_ADD_RATE = 10 // Amount of gauge added to nuisance per click
 GAMER_COST_GROWTH = 1.25 // Growth rate of gamer cost
 LOOTBOX_COST_GROWTH = 6
-GUN_COST_GROWTH = 3
+GUN_COST_GROWTH = 1.5
 GAMER_BOOST = 1 // Boost to clickValue per gamer
-GUN_BOOST = .1 // Boost to clickValueMult per gun
-MAX_MESSAGES = 10
+GUN_BOOST = .15 // Boost to clickValueMult per gun
+MAX_MESSAGES = 7
 
 messages = ["Keep clicking to keep the streak alive!"]
 
@@ -25,7 +26,8 @@ costs["gamer"] = 5000
 costs["lootBox"] = 1000
 costs["upgradeGun"] = 20000
 reqMaxStreak = new Map() // Required max kill streak for certain upgrades
-// TODO: Determine upgrades and costs
+
+// TODO: Determine more upgrades and costs
 // IDEA: Upgrade gun to improve clickValueMult (maybe they can stack?)
 // Hire party members to increase clickValue by fixed amount
 // M16: clickValue *= 3 (cuz 3 round burst lul)
@@ -47,11 +49,6 @@ timer = 0
 DRAW_RATE = 64 // Rate at which text on screen is updated
 ticks_till_reset = 3000 / tickRate // Ticks until the killStreak is reset (shorten as maxKillStreak increases?)
 resetKillStreak = ticks_till_reset
-
-var snd = new Audio("sounds/hitmarker.mp3");
-var fart = new Audio("sounds/fart.mp3")
-snd.volume = 0.10
-fart.volume = 0.25
 
 function addMessage(m) {
   if (messages.length == MAX_MESSAGES)
@@ -177,9 +174,9 @@ function calculateMultiplier(potty,wife,baby)
 }
 
 let clicker = new Clicker()
-let wife = new Nuisance("wife",0.05,100,50,60000)
-let potty = new Nuisance("potty",0.07,100,30,100000)
-let baby = new Nuisance("baby",0.05,100,60,33000)
+let wife = new Nuisance("wife",0.05,100,5000,60000)
+let potty = new Nuisance("potty",0.07,100,100,100000)
+let baby = new Nuisance("baby",0.04,100,10000,33000)
 
 function activateLootbox(cost)
 {
@@ -191,7 +188,7 @@ function activateLootbox(cost)
       resources["experience"] += 2 * cost
       break;
     case 1:
-      numGamers = 100
+      numGamers = 10
       addMessage("The sound of the LootBox has brought " + numGamers + " gamers to your cause!")
       resources["gamer"] += numGamers
       clickValue += GAMER_BOOST * numGamers
@@ -214,6 +211,10 @@ function updateText() {
   }
   // Update kills per click
   document.getElementById("kpc").innerHTML = (clickValue * clickValueMult).toFixed(0)
+  // Update exp per click
+  document.getElementById("exp-pc").innerHTML = (clickValue * clickValueMult * EXP_RATE).toFixed(0)
+  // Update exp per second
+  document.getElementById("exp-ps").innerHTML = ((clickValue - 1) * clickValueMult * EXP_RATE * EXP_PASSIVE_RATE * (1000 / tickRate)).toFixed(0)
   // Update nuisance values
   if (potty.isActive)
     document.getElementById("potty").innerHTML = potty.currentGauge.toFixed(0)
@@ -233,6 +234,13 @@ function updateText() {
   document.getElementById("messages").innerHTML = s
 }
 
+var snd = new Audio("sounds/hitmarker.mp3")
+var fart = new Audio("sounds/fart.mp3")
+var reload = new Audio("sounds/reload.mp3")
+snd.volume = 0.10
+fart.volume = 0.25
+reload.volume = 0.50
+
 var wifeSnd = new Audio("sounds/wife.mp3")
 var babySnd = new Audio("sounds/baby.mp3")
 var pottySnd = new Audio("sounds/potty.mp3")
@@ -243,8 +251,6 @@ pottySnd.volume = 0.25;
 
 var gamerSnd = new Audio("sounds/gamer.mp3")
 var lootBoxSnd = new Audio("sounds/lootbox.mp3")
-
-
 gamerSnd.volume = 0.25
 lootBoxSnd.volume = 0.25
 
@@ -287,6 +293,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   document.getElementById("upgradeGunButton").onclick = function() {
     if (resources["experience"] >= costs["upgradeGun"]) {
+      reload.currentTime = 0
+      reload.play()
       addMessage("You have upgraded your gun.")
       resources["experience"] -= costs["upgradeGun"]
       costs["upgradeGun"] *= GUN_COST_GROWTH
@@ -318,6 +326,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   window.setInterval(function(){ // Clock function
     if (!gameOver) {
+      resources["experience"] += (clickValue - 1) * clickValueMult * EXP_RATE * EXP_PASSIVE_RATE
       --resetKillStreak
       timer += tickRate
       if (resetKillStreak <= 0 && resources["killStreak"] > 0) {
@@ -331,27 +340,27 @@ document.addEventListener("DOMContentLoaded", function() {
       // Determine when to lock or unlock nuisances based on kill streak
       if (!potty.isActive && resources["maxKillStreak"] >= potty.killStreakNeeded && resources["maxKillStreak"] < potty.endKillStreak) {
         potty.isActive = true
-        addMessage("Duty is calling! Don't forget to potty.")
+        addMessage("<strong>Duty is calling! Don't forget to potty.</strong>")
       }
       if (!wife.isActive && resources["maxKillStreak"] >= wife.killStreakNeeded && resources["maxKillStreak"] < wife.endKillStreak) {
         wife.isActive = true
-        addMessage("Your wife is home. Look busy!")
+        addMessage("<strong>Your wife is home. Look busy!</strong>")
       }
       if (!baby.isActive && resources["maxKillStreak"] >= baby.killStreakNeeded && resources["maxKillStreak"] < baby.endKillStreak) {
         baby.isActive = true
-        addMessage("Your son is born. Remember to take care of him!")
+        addMessage("<strong>Your son is born. Remember to take care of him!</strong>")
       }
       // Tick everything
       if (potty.isActive) {
         let emptied = potty.tick()
         if (emptied)
-          addMessage("Your bladder is about to explode!")
+          addMessage("<strong>Your bladder is about to explode!</strong>")
         pottyIsEmpty()
       }
       if (wife.isActive) {
         let emptied = wife.tick()
         if (emptied)
-          addMessage("Your wife looks mad. Is she...unplugging your console?!")
+          addMessage("<strong>Your wife looks mad. Is she...unplugging your console?!</strong>")
         wifeIsEmpty()
       }
       if (baby.isActive) {
@@ -365,123 +374,3 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }, tickRate)
 })
-
-
-
-// ---
-// Professor's code
-// ---
-// var timer = 256
-// var tickRate = 16
-// var visualRate = 256
-// var resources = {"gold":0,"pickaxe":1}
-// var costs = {"pickaxe":15,
-// 	     "miner":200,
-// 	     "miner_pickaxe":15}
-// var growthRate = {"pickaxe":1.25,
-// 		  "miner":1.25,
-// 	     "miner_pickaxe":1.75}
-
-// var increments = [{"input":["miner","miner_pickaxe"],
-// 		   "output":"gold"}]
-
-// var unlocks = {"pickaxe":{"gold":10},
-// 	       "miner":{"gold":100},
-// 	       "miner_pickaxe":{"miner":1}}
-
-// function mineGold(num){
-//     resources["gold"] += num*resources["pickaxe"]
-//     updateText()
-// };
-
-// function upgradeMinerPickaxe(num){
-//     if (resources["gold"] >= costs["miner_pickaxe"]*num){
-// 	resources["miner_pickaxe"] += num
-// 	resources["gold"] -= num*costs["miner_pickaxe"]
-	
-// 	costs["miner_pickaxe"] *= growthRate["miner_pickaxe"]
-	
-// 	updateText()
-//     }
-// };
-
-// function upgradePickaxe(num){
-//     if (resources["gold"] >= costs["pickaxe"]*num){
-// 	resources["pickaxe"] += num
-// 	resources["gold"] -= num*costs["pickaxe"]
-	
-// 	costs["pickaxe"] *= growthRate["pickaxe"]
-	
-// 	updateText()
-//     }
-// };
-// function hireMiner(num){
-//     if (resources["gold"] >= costs["miner"]*num){
-// 	if (!resources["miner"]){
-// 	    resources["miner"] = 0
-// 	}
-// 	if (!resources["miner_pickaxe"]){
-// 	    resources["miner_pickaxe"] = 1
-// 	}
-// 	resources["miner"] += num
-// 	resources["gold"] -= num*costs["miner"]
-	
-// 	costs["miner"] *= growthRate["miner"]
-	
-// 	updateText()
-
-	
-//     }
-// };
-
-
-
-// function updateText(){
-//     for (var key in unlocks){
-// 	var unlocked = true
-// 	for (var criterion in unlocks[key]){
-// 	    unlocked = unlocked && resources[criterion] >= unlocks[key][criterion]
-// 	}
-// 	if (unlocked){
-// 	    for (var element of document.getElementsByClassName("show_"+key)){		
-// 		element.style.display = "block"
-// 	    }
-// 	}
-//     }
-    
-//     for (var key in resources){
-// 	 for (var element of document.getElementsByClassName(key)){
-// 	    element.innerHTML = resources[key].toFixed(2)
-// 	}
-//     }
-//     for (var key in costs){
-// 	for (var element of document.getElementsByClassName(key+"_cost")){
-// 	    element.innerHTML = costs[key].toFixed(2)
-// 	}
-//     }
-// };
-
-
-// window.setInterval(function(){
-//     timer += tickRate
-
-    
-//     for (var increment of increments){
-// 	total = 1
-// 	for (var input of increment["input"]){
-// 	    total *= resources[input]
-	    
-// 	}
-// 	if (total){
-// 	    console.log(total)
-// 	    resources[increment["output"]] += total/tickRate
-// 	}
-//     }
-    
-//     if (timer > visualRate){
-// 	timer -= visualRate
-// 	updateText()
-//     }
-  
-
-// }, tickRate);

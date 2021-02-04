@@ -1,5 +1,5 @@
 body {
-  background-image: url(imgs/banana.gif);
+  background-image: url(imgs/mlg.gif);
   background-repeat: repeat;
 }
 
@@ -79,4 +79,8 @@ img {
 .center-horizontal {
   margin-left: auto;
   margin-right: auto;
+}
+
+.big-padding {
+  padding: 150px
 }
