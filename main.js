@@ -1,7 +1,9 @@
+gameOver = false
 clickValue = 1 // Amount of kills/exp per click
 clickValueMult = 1 // Multiplier for clickValue
 EXP_RATE = 100 // Multiplier for exp growth rate
 WIFE_SAP_RATE = 0.005 // Rate at which the wife drains your funds
+KILLSTREAK_SAP_RATE = 0.05 // Rate at which kill streak drops
 NUISANCE_ADD_RATE = 10
 GAMER_COST_GROWTH = 1.25 // Growth rate of gamer cost
 LOOTBOX_COST_GROWTH = 6
@@ -21,7 +23,7 @@ resources["gamer"] = 0
 costs = new Map() // Cost of upgrades
 costs["gamer"] = 5000
 costs["lootBox"] = 1000
-costs["upgradeGun"] = 50000
+costs["upgradeGun"] = 20000
 reqMaxStreak = new Map() // Required max kill streak for certain upgrades
 // TODO: Determine upgrades and costs
 // IDEA: Upgrade gun to improve clickValueMult (maybe they can stack?)
@@ -57,6 +59,10 @@ function addMessage(m) {
   messages.push(m)
 }
 
+function generateDiscordDigitString() {
+  return "#" + (Math.floor(Math.random() * 9000) + 1000).toString()
+}
+
 class Clicker { // The main clicker object
 
   constructor() {
@@ -77,7 +83,7 @@ class Clicker { // The main clicker object
 class Nuisance {
 
   constructor(name, tickAmount, gaugeMax, killStreakNeeded, endKillStreak) {
-    //tickAmount can be the amount of "gauge" lost per tick
+    // tickAmount can be the amount of "gauge" lost per tick
     this.isActive = false
     this.name = name
     this.tickAmount = tickAmount
@@ -87,13 +93,13 @@ class Nuisance {
     this.currentGauge = gaugeMax
   }
 
-  tick() { // Return true if the gauge has just reached 0
-  // TODO: Fix this
-    let pastAmount = this.tickAmount
+  tick() {
+    var pastAmount = this.currentGauge
     this.currentGauge -= this.tickAmount
     if (this.currentGauge < 0)
-      this.currentGauge = 0.0
-    if (Math.abs(pastAmount - 0.0) > Math.epsilon && math.abs(this.currentGauge - 0.0) < Math.epsilon)
+      this.currentGauge = 0
+    // Return true if the gauge has just reached 0
+    if (pastAmount != 0 && this.currentGauge == 0)
       return true
     return false
   }
@@ -113,7 +119,18 @@ class Nuisance {
 }
 
 function babyIsEmpty() {
-  //Ends the game
+  // Ends the game
+  if (baby.currentGauge == 0 && !gameOver) {
+    gameOver = true
+    // Draw game over screen
+    var element = document.getElementById("game-screen")
+    element.innerHTML = 
+      "<div id=\"game-over\"><strong>The baby died.</strong><br>Your life is over<br>High Score: " + resources["maxKillStreak"].toFixed(0) + "</div>"
+    element = document.getElementById("game-over")
+    element.classList.add("white-box")
+    element.classList.add("center")
+    element.classList.add("one-col")
+  }
 }
 
 function wifeIsEmpty() {
@@ -123,7 +140,7 @@ function wifeIsEmpty() {
 }
 
 function pottyIsEmpty() {
-  //Disables click
+  // Disables click
   if (potty.currentGauge == 0) {
     clicker.canClick = false
   } else {
@@ -160,13 +177,33 @@ function calculateMultiplier(potty,wife,baby)
 }
 
 let clicker = new Clicker()
-let wife = new Nuisance("wife",0.05,100,3000,60000)
+let wife = new Nuisance("wife",0.05,100,50,60000)
 let potty = new Nuisance("potty",0.07,100,30,100000)
-let baby = new Nuisance("baby",0.05,100,10000,33000)
+let baby = new Nuisance("baby",0.05,100,60,33000)
 
-function getLootBoxValue(cost)
+function activateLootbox(cost)
 {
-  return cost * Math.round(Math.random() * 2 + 1); 
+  choice = Math.floor(Math.random() * 3)
+  switch(choice)
+  {
+    case 0:
+      addMessage("Woah! That lootBox contained " + (2 * cost).toFixed(0) + " EXP!")
+      resources["experience"] += 2 * cost
+      break;
+    case 1:
+      numGamers = 100
+      addMessage("The sound of the LootBox has brought " + numGamers + " gamers to your cause!")
+      resources["gamer"] += numGamers
+      clickValue += GAMER_BOOST * numGamers
+
+      break;
+    case 2:
+      addMessage("The LootBox upgrades your gun! EPIC!")
+      clickValueMult += GUN_BOOST
+      break;
+    default:
+      addMessage("Wow! You get nothing!")
+  }
 }
 
 function updateText() {
@@ -261,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (resources["experience"] >= costs["gamer"]) {
       gamerSnd.currentTime = 0
       gamerSnd.play()
-      addMessage("Timmy has entered the call.")
+      addMessage("Timmy" + generateDiscordDigitString() + " has entered the call.")
       resources["experience"] -= costs["gamer"]
       costs["gamer"] *= GAMER_COST_GROWTH
       ++resources["gamer"]
@@ -273,56 +310,58 @@ document.addEventListener("DOMContentLoaded", function() {
     if (resources["experience"] >= costs["lootBox"]) {
       lootBoxSnd.currentTime = 0
       lootBoxSnd.play()
-      lootBoxValue = getLootBoxValue(costs["lootBox"])
       resources["experience"] -= costs["lootBox"]
-      resources["experience"] += lootBoxValue;
-      addMessage("You pay " + costs["lootBox"].toFixed(0) + " EXP and get " + lootBoxValue.toFixed(0) + " EXP in return! EPIC!!!")
+      activateLootbox(costs["lootBox"])
       costs["lootBox"] *= LOOTBOX_COST_GROWTH
     }
   }
 
   window.setInterval(function(){ // Clock function
-    --resetKillStreak
-    timer += tickRate
-    if (resetKillStreak <= 0 && resources["killStreak"] > 0) {
-      resetKillStreak = 0
-      resources["killStreak"] -= resources["killStreak"] * .07
+    if (!gameOver) {
+      --resetKillStreak
+      timer += tickRate
+      if (resetKillStreak <= 0 && resources["killStreak"] > 0) {
+        resetKillStreak = 0
+        resources["killStreak"] -= resources["killStreak"] * KILLSTREAK_SAP_RATE
 
-      if (resources["killStreak"] < 0) {
-        resources["killStreak"] = 0
+        if (resources["killStreak"] < 0) {
+          resources["killStreak"] = 0
+        }
       }
-    }
-    // Determine when to lock or unlock nuisances based on kill streak
-    if (!potty.isActive && resources["maxKillStreak"] >= potty.killStreakNeeded && resources["maxKillStreak"] < potty.endKillStreak) {
-      potty.isActive = true
-      addMessage("Duty is calling!")
-    }
-    if (!wife.isActive && resources["maxKillStreak"] >= wife.killStreakNeeded && resources["maxKillStreak"] < wife.endKillStreak) {
-      wife.isActive = true
-      addMessage("Your wife is home. Look busy!")
-    }
-    if (!baby.isActive && resources["maxKillStreak"] >= baby.killStreakNeeded && resources["maxKillStreak"] < baby.endKillStreak) {
-      baby.isActive = true
-    }
-    // Tick everything
-    if (potty.isActive) {
-      let emptied = potty.tick()
-      if (emptied)
-        addMessage("Duty calls! No more gaming!")
-      pottyIsEmpty()
-    }
-    if (wife.isActive) {
-      let emptied = wife.tick()
-      if (emptied)
-        addMessage("Your wife looks mad. Is she...unplugging your console?!")
-      wifeIsEmpty()
-    }
-    if (baby.isActive) {
-      let emptied = baby.tick()
-    }
-    if (timer > DRAW_RATE) {
-      timer -= DRAW_RATE
-      updateText()
+      // Determine when to lock or unlock nuisances based on kill streak
+      if (!potty.isActive && resources["maxKillStreak"] >= potty.killStreakNeeded && resources["maxKillStreak"] < potty.endKillStreak) {
+        potty.isActive = true
+        addMessage("Duty is calling! Don't forget to potty.")
+      }
+      if (!wife.isActive && resources["maxKillStreak"] >= wife.killStreakNeeded && resources["maxKillStreak"] < wife.endKillStreak) {
+        wife.isActive = true
+        addMessage("Your wife is home. Look busy!")
+      }
+      if (!baby.isActive && resources["maxKillStreak"] >= baby.killStreakNeeded && resources["maxKillStreak"] < baby.endKillStreak) {
+        baby.isActive = true
+        addMessage("Your son is born. Remember to take care of him!")
+      }
+      // Tick everything
+      if (potty.isActive) {
+        let emptied = potty.tick()
+        if (emptied)
+          addMessage("Your bladder is about to explode!")
+        pottyIsEmpty()
+      }
+      if (wife.isActive) {
+        let emptied = wife.tick()
+        if (emptied)
+          addMessage("Your wife looks mad. Is she...unplugging your console?!")
+        wifeIsEmpty()
+      }
+      if (baby.isActive) {
+        let emptied = baby.tick()
+        babyIsEmpty()
+      }
+      if (timer > DRAW_RATE) {
+        timer -= DRAW_RATE
+        updateText()
+      }
     }
   }, tickRate)
 })
