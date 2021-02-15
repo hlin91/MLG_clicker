@@ -1,6 +1,9 @@
 body {
+  margin: auto;
   background-image: url(imgs/mlg.gif);
   background-repeat: repeat;
+  padding-left: 15%;
+  padding-right: 15%;
 }
 
 button {
@@ -28,6 +31,10 @@ button:active {
   transform: scale(.99, .99)
 }
 
+.main-click:hover {
+  transform: scale(1.01, 1.01);
+}
+
 .column {
   float: left;
   padding-top: 4px;
@@ -37,10 +44,48 @@ button:active {
   margin: 4px;
 }
 
+.babyBtn {
+  background:url(./imgs/baby.png) no-repeat center;
+  background-size: cover;
+  cursor:pointer;
+  border:none;
+  height:50px;
+  width:50px;
+  background-color: #000;
+}
+
+.wifeBtn {
+  background:url(./imgs/wife.png) no-repeat center;
+  background-size: cover;
+  cursor:pointer;
+  border:none;
+  height:100px;
+  width:100px;
+  background-color: #000;
+}
+
+.pottyBtn {
+  background:url(./imgs/potty.png) no-repeat center;
+  background-size: cover; 
+  cursor:pointer;
+  border:none;
+  height:100px;
+  width:100px;
+  background-color: #000;
+}
+
+.shootBtn {
+  background:url(./imgs/click_area_placehold.png) no-repeat center;
+  background-size: cover;
+  height: 500px;
+  width:500px;
+  border-radius: 50%;
+}
+
 .white-box {
   background-color: rgba(255, 255, 255, .90);
   border-radius: 10px;
-  padding: 20px
+  padding: 20px;
 }
 
 img {
@@ -52,7 +97,6 @@ img {
   grid-template-columns: 1fr 1fr;
   align-items: center;
   text-align: center;
-  grid-gap: 10px;
 }
 
 .one-col {
@@ -60,8 +104,12 @@ img {
   grid-template-columns: 1fr;
   align-items: center;
   text-align:center;
+}
+
+.gap {
   grid-gap: 10px;
 }
+
 .row-experience {
   text-align:center;
 }
@@ -82,5 +130,53 @@ img {
 }
 
 .big-padding {
-  padding: 150px
+  padding: 100px
+}
+
+.clicker {
+  border-radius: 8px;
+  background-image:url(./imgs/click_area_placehold.png);
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nuisanceButton:hover {
+  background-color: black;
 }

@@ -5,8 +5,8 @@
   </head>
   <body id="game-screen">
     <script type="text/javascript" src="main.js"></script>
-    <div class="two-col" style="max-height: 100%">
-      <div class="one-col" id="tv-and-shop">
+    <div class="two-col gap" style="max-height: 100%">
+      <div class="one-col gap" id="tv-and-shop">
         <audio controls autoplay loop id="meme-music">
           <source src="sounds/7nationarmy.mp3" type="audio/mp3">
           Your browser does not support the audio element.
@@ -15,45 +15,108 @@
           var audio = document.getElementById("meme-music");
           audio.volume = 0.20;
         </script>
-        <div class="white-box two-col">
-          <div class="one-col">
-            <p>
-              Max streak: <span id="maxKillStreak">0</span><br>
-              Kill streak: <span id="killStreak">0</span><br>
-              Gamers: <span id="gamer">0</span><br>
-              Kills per click: <span id="kpc">0</span><br>
-              Exp per click <span id="exp-pc">0</span><br>
-              Exp per second: <span id="exp-ps">0</span><br>
+        <div>
+          <button class="center click-ani" id="bgButton">Toggle BG</button>
+          <!-- Trigger/Open The Modal -->
+          <button class="center click-ani" id="myBtn"><strong>HOW TO PLAY</strong></button>
+        </div>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+          <!-- Modal content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <p style="font-size:300%;">
+              The year is 2010, and you are a professional gamer.
+              <br>
+              <br>
+              Click the gameplay image to rack up experience and a killstreak.<br> 
+              Stop clicking for too long and your killstreak will drop!<br>
+              Upgrade your gun to get more EXP per kill.<br>
+              Recruit gamers to generate passive EXP and boost your kills per click.<br>
+              Buy lootboxes for helpful, random effects.
+              <br>
+              <br>
+              Eventually, you'll have to take care of your bodily functions, wife, and baby.
+              <br>
+              Click on them as their color gets more red in order to keep gaming!
             </p>
+          </div>
+        </div>
+        <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+          modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+          modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        }
+        </script>
+
+        <div class="white-box two-col gap">
+          <div class="one-col gap">
+            <div class="one-col" >
+              <strong>Max streak: </strong><span id="maxKillStreak">0</span>
+              <strong>Kill streak: </strong><span id="killStreak">0</span>
+              <strong>Gamers: </strong><span id="gamer">0</span>
+              <strong>Kills per click: </strong><span id="kpc">0</span>
+              <strong>Exp per click: </strong><span id="exp-pc">0</span>
+              <strong>Exp per second: </strong><span id="exp-ps">0</span>
+            </div>
             <div class="row-experience" id="experience-bar" style="background-color: #67DB7B; border-radius: 10px">
               <p>Exp: <span id="experience">0</span></p>
             </div>
           </div>
-          <div class="one-col" id="message-box">
-            <p id="messages">
-          </p>
+          <div class="one-col gap" id="message-box">
+            <p id="messages"></p>
+          </div>
         </div>
-        </div>
-        <div class="shop one-col center white-box">
+        <div class="shop one-col gap center white-box">
           <button id="upgradeGunButton" class="click-ani">Upgrade Gun<br>Cost: <span id= "upgradeGunCost">0</span> EXP</button>
           <button id="gamerButton" class="click-ani">Recruit Gamer<br>Cost: <span id="gamerCost"></span> EXP</button>
           <button id="lootBoxButton" class="click-ani">Buy Loot Box<br>Cost: <span id="lootBoxCost"></span> EXP</button>
-          <button id="CosmeticsButton" class="click-ani">Placeholder</button>
+          <button id="progressButton" class="click-ani">Progress</button>
         </div>
-        <input class="click-ani center-horizontal" id="clicker" type="image" src="imgs/click_area_placehold.png" height="900px">
+        <div id="shootingGallery">
+          <!--<input class="main-click click-ani" id="clicker" type="image" src="imgs/click_area_placehold.png" width="500" height="500"/>-->
+
+          <button class="main-click click-ani shootBtn" id="clicker">
+
+          </button>
+        </div>
       </div>
-      <div class="one-col">
-        <div class="two-col white-box center" id="nuisances">
-            <button class="click-ani big-padding" id="pottyButton">Potty:  
-              <span id="potty">N/A</span>
+      <div class="one-col gap">
+        <div class="two-col gap white-box center" id="nuisances">
+            <button class="pottyBtn click-ani big-padding nuisanceButton" id="pottyButton">  
+              <span id="potty"></span>
             </button>
-            <button class="click-ani big-padding" id="wifeButton">Wife: 
-              <span id="wife">N/A</span>
+            <button class="wifeBtn click-ani big-padding nuisanceButton" id="wifeButton"> 
+              <span id="wife"></span>
             </button>
-            <button class="click-ani big-padding" id="babyButton">Baby: 
-              <span id="baby">N/A</span>
+            <button class="babyBtn click-ani big-padding nuisanceButton" id="babyButton"> 
+              <span id="baby"></span>
             </button>
-            <button class="click-ani big-padding" id="button-hold-killstreak">Placeholder</button>
+            <div class="one-col">
+              Kill streak drops in:
+              <span id="kill-reset">0</span>
+            </div>
         </div>
       </div>
     </div>

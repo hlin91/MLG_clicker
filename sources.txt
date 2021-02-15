@@ -1,0 +1,15 @@
+Color changing function:
+https://stackoverflow.com/questions/11371550/change-hover-css-properties-with-javascript
+
+Modal:
+https://www.w3schools.com/howto/howto_css_modals.asp
+
+Auto scaling body content:
+https://css-tricks.com/scaled-proportional-blocks-with-css-and-javascript/
+
+Audio in HTML:
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio
+
+Changing Audio source:
+https://stackoverflow.com/questions/10792163/change-audio-src-with-javascript
+
